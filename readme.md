@@ -14,7 +14,7 @@ A semantic search and question-answering pipeline that builds a **Retrieval-Augm
 * **Vector Index**: `faiss-cpu`
 * **Data Extraction**: `youtube-transcript-api`
 
-## 📋 Installation & Environment Setup
+## Installation & Environment Setup
 
 1. **Install dependencies**:
    ```bash
@@ -28,5 +28,21 @@ A semantic search and question-answering pipeline that builds a **Retrieval-Augm
    os.environ["HUGGINGFACEHUB_API_TOKEN"] = "your_huggingface_api_token"
    ```
 
-## ⚙️ RAG Architecture Workflow
+## RAG Architecture Workflow
+1. **Extraction**: Plain-text conversations are compiled down from targeted source video IDs.
+2. **Chunking**: Text strings are chunked into uniform blocks of 1000 characters with a 200-character rolling window overlap to maintain document syntax across splits.
+3. **Embedding Strategy**: Chunks are processed through `sentence-transformers/all-MiniLM-L6-v2` to compute vector coordinates.
+4. **Retrieval**: FAISS searches vector spaces using cosine similarity to return the top `k=4` most contextually relevant blocks.
+5. **Generation**: Prompt configurations force the Llama-3.1 model to answer strictly using the retrieved text blocks.
+
+## Quick Usage Example
+
+Execute the RAG execution block below to pose questions directly to your pipeline:
+
+```python
+# Execute the unified main execution chain
+query = "is the topic of nuclear fusion discussed in this video? if yes then what was discussed"
+response = main_chain.invoke(query)
+print(response)
+```
 
